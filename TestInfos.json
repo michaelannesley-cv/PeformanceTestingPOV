@@ -1,0 +1,14 @@
+[
+  {
+    "SiteName": "DemoEvergreenProduction",
+    "Url": "https://demoevergreen.commerce.vision",
+    "DbName": "cv-db-site-prod-australiaeast-demoevergreen",
+    "DbConnectionString": "Server=tcp:cv-sqls-site-prod-australiaeast-001.database.windows.net,1433;Initial Catalog=cv-db-site-prod-australiaeast-demoevergreen;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Authentication=\"Active Directory Integrated\";"
+  },
+  {
+    "SiteName": "DemoEvergreenLocal",
+    "Url": "https://demoevergreen.localhost",
+    "DbName": "demoevergreen",
+    "DbConnectionString": "Server=localhost;Initial Catalog=demoevergreen;Encrypt=True;TrustServerCertificate=True;Trusted_Connection=True;Connection Timeout=30;"
+  }
+]

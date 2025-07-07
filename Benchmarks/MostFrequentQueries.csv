@@ -1,0 +1,224 @@
+﻿"(@1 varchar(8000),@2 varchar(8000),@3 varchar(8000))SELECT [CMSTHEMEELEMENT].* FROM [CMSTHEMEELEMENT] WHERE [ThemeCode]=@1 AND [ElementType]=@2 AND [Name]=@3 ORDER BY [CMSTHEMEELEMENT].[Id] ASC",11514
+"(@MenuCode varchar(100),@itemCodeLength int,@ItemCode varchar(100),@IsSection bit,@IncludeOneLevelOnly bit,@IncludeParent bit)with menuItems (MenuCode, ItemCode)
+    as (
+        select  MenuCode, ItemCode
+        from    CVMenuItems 
+        where   MenuCode = @MenuCode
+            and CASE WHEN @itemCodeLength = 0 THEN ItemCode      -- if @ItemCode is empty just get ALL regardless of ItemCode 
+                     WHEN @itemCodeLength > 0 THEN @ItemCode
+                END  = CVMenuItems.ItemCode
+            and ISNULL(IsSection, 0) = @IsSection
+            and ISNULL(Hidden, 0) = 0
+            -- Prevent recursion where parent of the item is itself, more than one level will still break but this is a data issue anyway
+            and CVMenuItems.ParentItem <> CVMenuItems.ItemCode 
+        union all
+        select  innerMenuItems.MenuCode, innerMenuItems.ItemCode
+        from    CVMenuItems as innerMenuItems
+        join    menuItems 
+                    on  innerMenuItems.MenuCode = menuItems.MenuCode
+                    and innerMenuItems.ParentItem = menuItems.ItemCode
+                    -- Prevent recursion where parent of the item is itself, more than one level will still break but this is a data issue anyway
+					and ((innerMenuItems.ParentItem <> innerMenuItems.ItemCode and @IncludeOneLevelOnly = 0)
+						or (innerMenuItems.ParentItem = @ItemCode and @IncludeOneLevelOnly = 1))
+                    and ISNULL(innerMenuItems.Hidden, 0) = 0
+    )
+    select  distinct CVMenuItems.* -- distinct required when @ItemCode is empty
+    from    CVMenuItems
+    join    menuItems
+                on  CVMENUITEMS.MenuCode =  menuItems.MenuCode
+                and CVMENUITEMS.ItemCode =  menuItems.ItemCode
+    where   CASE WHEN @itemCodeLength = 0 OR @IncludeParent = 1 THEN 'A34E3251-4FC7-4E1D-8857-2954C16104C3' -- if @ItemCode is empty  or we are including the parent item just get ALL regardless of ItemCode
+                 WHEN @itemCodeLength > 0 THEN @ItemCode                              -- the guid should NOT be the ItemCode of a menu item... :o)
+            END  <> CVMenuItems.ItemCode 
+    OPTION (MAXRECURSION 1000)",465
+(@1 varchar(8000))SELECT [WhseCode] FROM [ProntoStockWarehouse] WHERE [StockCode]=@1,344
+select [PERSONALISATIONRULEAPPLICATION].* from [PERSONALISATIONRULEAPPLICATION] WHERE IsEnabled=1 and UseContext='Widget' and UseIdentification like 'Product List Item Zoned|%' ORDER BY [PERSONALISATIONRULEAPPLICATION].[Id],342
+(@1 varchar(8000))SELECT [CUSTOMER].* FROM [CUSTOMER] WHERE [Code]=@1 ORDER BY [CUSTOMER].[Code] ASC,220
+(@1 varchar(8000))SELECT [USER].* FROM [USER] WHERE [EmailAddress]=@1 ORDER BY [USER].[EmailAddress] ASC,181
+(@1 varchar(8000))SELECT [ROLE].* FROM [ROLE] WHERE [RoleName]=@1 ORDER BY [ROLE].[RoleName] ASC,177
+"select PromotionalCode.*, CASE WHEN PromotionalCode.PromotionType IN ('ProductDiscount', 'ProductDiscountMinOrderQty', 'ProductPriceOverride') THEN 1 ELSE 0 END AS IsInclusive from PromotionalCode INNER JOIN SalesOrderPromotionalCode ON PromotionalCode.PromotionCode = SalesOrderPromotionalCode.PromotionCode WHERE SalesOrderPromotionalCode.SoOrderNo = 100018514 ORDER BY SalesOrderPromotionalCode.Seq",145
+"(@1 varchar(8000),@2 varchar(8000))SELECT [USERSESSION].* FROM [USERSESSION] WHERE [EmailAddress]=@1 AND [SessionStart]=@2 ORDER BY [USERSESSION].[EmailAddress] ASC,[USERSESSION].[SessionStart] ASC",128
+"(@1 int,@2 varchar(8000))SELECT [PRONTOSALESORDER].* FROM [PRONTOSALESORDER] WHERE [SoOrderNo]=@1 AND [SoBoSuffix]=@2 ORDER BY [PRONTOSALESORDER].[SoOrderNo] ASC,[PRONTOSALESORDER].[SoBoSuffix] ASC",128
+"(@1 varchar(8000))SELECT [CMSLAYER].* FROM [CMSLAYER] WHERE [ThemeCode]=@1 ORDER BY [CMSLAYER].[ThemeCode] ASC,[CMSLAYER].[LayerName] ASC",116
+select [PERSONALISATIONRULEAPPLICATION].* from [PERSONALISATIONRULEAPPLICATION] WHERE IsEnabled=1 and UseContext='Widget' and UseIdentification like 'Article List Item Zoned|%' ORDER BY [PERSONALISATIONRULEAPPLICATION].[Id],105
+select ProductCategory.* from ProductCategory INNER JOIN CustomerProduct ON ProductCategory.CategoryCode = CustomerProduct.ProductKey AND ( CustomerProduct.CustomerCode = 'AACAB' OR CustomerProduct.CustomerCode = '_WEBSALES' ) AND CustomerProduct.Type = 'CAT'  WHERE 1=1 AND ProductCategory.SEOUrl = '/.well-known/appspecific/com.chrome.devtools.json' ORDER BY ProductCategory.CategoryCode,97
+(@1 varchar(8000))SELECT [CATALOGUE].* FROM [CATALOGUE] WHERE [CatalogueCode]=@1 ORDER BY [CATALOGUE].[CatalogueCode] ASC,65
+select * from PersonalisationRule WHERE  1 = 1  AND Id in (18) ORDER BY [PERSONALISATIONRULE].[Id],65
+select [PERSONALISATIONRULEAPPLICATION].* from [PERSONALISATIONRULEAPPLICATION] WHERE IsEnabled=1 and UseContext='Widget' and UseIdentification like 'Home Page|%' ORDER BY [PERSONALISATIONRULEAPPLICATION].[Id],65
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_HTML Snippet' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Page Title Dynamic' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+select [PERSONALISATIONRULEAPPLICATION].* from [PERSONALISATIONRULEAPPLICATION] WHERE IsEnabled=1 and UseContext='Widget' and UseIdentification like 'Theme Layout|%' ORDER BY [PERSONALISATIONRULEAPPLICATION].[Id],64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Theme Layout' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Opening Body' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product Compare' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product Search With Preview' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Newsletter' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Logo' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Login Logout Modal' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Payment Icons' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Theme Layout Head' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"(@5 varchar(8000),@6 varchar(8000),@1 varchar(8000),@2 varchar(8000),@3 int,@4 int)UPDATE [USERSESSION] set [fwUpdated] = @1,[LastPageView] = @2,[PageViews] = @3,[NextEventSeq] = @4  WHERE [SessionStart]=@5 AND [EmailAddress]=@6",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Messages' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Home Page' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Section Menu' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Canonical Link' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Navigation Button' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+select [PERSONALISATIONRULEAPPLICATION].* from [PERSONALISATIONRULEAPPLICATION] WHERE IsEnabled=1 and UseContext='Widget' and UseIdentification like 'Login Logout Modal Page|%' ORDER BY [PERSONALISATIONRULEAPPLICATION].[Id],64
+select [CVMENUITEMS].* from [CVMENUITEMS] WHERE MenuCode = 'PUBLIC' AND Hidden <> 1 AND ParentItem = '' and IsSection <> 1 ORDER BY Seq,64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Outstanding Tasks Display' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' AND ISNULL(IsHidden, 0) = 0 AND Name LIKE 'mmc_BPDTHEME01%' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Login Logout Modal Page' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Catalogue Select' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Social Links' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Custom Widget Wrapper' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Category Menu' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Cart Summary' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Scripts & Styles' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Role Select' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",64
+select [ROLE].* from [ROLE] ORDER BY [ROLE].[RoleName],61
+"UPDATE dbo.[PersonalisationLog]  SET    TimeStamp   = dbo.GETCSSDATE()       , fwUpdated   = dbo.GETCSSDATE()       , fwUpdatedBy = 'guestuser818bcaf3-c094-4490-90ec-749c83bc8c69'  WHERE  EmailAddress    = 'guestuser84f728b6-64c4-4e19-bd1b-6f3d3f2f5991'     and EventType       = 'TemplateView'     and EventParameter1 = 'Home Page'     and EventParameter2 = 'STANDARD_PAGE'     and EventParameter3 = ''     and EventParameter4 = ''     and CustomerCode = 'WEBSALES'",61
+"select TOP 10 CampaignProducts.*, Campaign.RecordsPerPage, Product.* from Product INNER JOIN CampaignProducts ON Product.ProductCode = CampaignProducts.ProductCode AND CampaignProducts.CampaignCode = 'DEMO1' INNER JOIN Campaign ON CampaignProducts.CampaignCode = Campaign.CampaignCode AND Campaign.CampaignCode = 'DEMO1' WHERE Product.ItemValid = 1 AND Product.IsDeleted = 0  ORDER BY CampaignProducts.Seq, CampaignProducts.ProductCode",57
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Static Content' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",57
+select Product.* from Product  WHERE Product.ItemValid = 1 AND Product.IsDeleted = 0  AND Product.SEOUrl = '/.well-known/appspecific/com.chrome.devtools.json' ORDER BY [PRODUCT].[ProductCode],55
+"select [USERROLE].* from [USERROLE] WHERE EmailAddress = 'guestuser818bcaf3-c094-4490-90ec-749c83bc8c69' AND ISNULL(HideInRoleSelect, 0) = 0 ORDER BY [USERROLE].[EmailAddress], [USERROLE].[RoleName]",55
+"(@SoOrderNo int,@SoBoSuffix varchar(2))SELECT    ProntoSalesOrderLine.*,     
+            SolLineSeq AS Line,
+            OrderQty = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolOrderedQty ELSE NULL END,
+            Unit = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolStkUnitDesc ELSE '' END,
+            [Alloc Qty] = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolShippedQty ELSE NULL END,
+            [Ship Qty] = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolShippedQty ELSE NULL END,
+            description = CASE WHEN (sollinedescription != '' AND sollinedescription IS NOT NULL AND sollinetype = 'SN') 
+            THEN sollinedescription WHEN (sollinedescription != '' AND sollinedescription IS NOT NULL 
+            AND sollinetype <> 'SC') THEN sollinedescription + stockcode WHEN (sollinedescription != '' AND 
+            sollinedescription IS NOT NULL AND sollinetype = 'SC') THEN sollinedescription ELSE Product.description END,
+            NettPrice = CASE WHEN sollinetype IN ('SN','SS') THEN SolItemPrice * (1 - (SolDiscRate / 100)) ELSE NULL END,
+            Price = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolItemPrice ELSE NULL END,
+            per = CASE WHEN sollinetype = 'SN' AND solpriceoverideflag = 'A' THEN SolStkUnitDesc 
+            WHEN sollinetype = 'SN' AND solpriceoverideflag = '2' THEN Product.AltUnitDesc WHEN sollinetype = 'SN' 
+            AND solpriceoverideflag NOT IN ('A', '2') THEN Product.UnitDesc WHEN sollinetype = 'SS' THEN 
+            ProntoSalesOrderLine.SolStkUnitDesc ELSE '' END,
+            Disc = CASE WHEN sollinetype IN ('SN', 'SS') THEN SolDiscRate ELSE NULL END,
+            [Total] = CASE WHEN sollinetype = 'DN' THEN NULL ELSE SolLineAmount END,
+            [Shipped Total] = CASE WHEN sollinetype = 'DN' THEN NULL ELSE SolShippedAmount END,
+            [Total(ex.)] = CASE WHEN sollinetype = 'DN' THEN NULL ELSE SolLineAmount - SolShippedSalesTaxAmt END,
+            [Shipped Total (ex)] = CASE WHEN sollinetype = 'DN' THEN NULL ELSE SolShippedAmount - SolShippedSalesTaxAmt END,
+            [Code] = CASE WHEN sollinetype = 'DN' THEN '' ELSE Product.APN END,
+            [Stock Code] = CASE WHEN sollinetype = 'DN' THEN '' ELSE stockcode END
+    FROM    ProntoSalesOrderLine LEFT OUTER JOIN Product ON ProductCode = StockCode
+    WHERE    SoOrderNo = @SoOrderNo and SoBoSuffix = @SoBoSuffix 
+    ORDER BY Line",55
+SELECT DISTINCT Catalogue.* FROM Catalogue JOIN UserCatalogue ON Catalogue.CatalogueCode = UserCatalogue.CatalogueCode WHERE UserCatalogue.EmailAddress = 'guestuser818bcaf3-c094-4490-90ec-749c83bc8c69' AND UserCatalogue.CustomerCode = 'WEBSALES' ORDER BY Catalogue.Description,55
+"(@MenuCode varchar(50),@ItemCode varchar(50))WITH RecursiveCVMenuItems (MenuCode,ItemCode,ParentItem,Label,PageName,CustomPage,IsSection,NoBreadcrumbIfIsSectionWithNoPage,ParentLevel,Parameter,SecurePage) 
+ -- Root (anchor) part
+        AS (SELECT cmi.MenuCode, 
+                    cmi.ItemCode,
+                    cmi.ParentItem, 
+                    cmi.Label,
+                    cmi.PageName,
+                    cmi.CustomPage,
+                    cmi.IsSection,
+                    cmi.NoBreadcrumbIfIsSectionWithNoPage,
+                    0 AS ParentCategoryLevel,
+                    cmi.Parameter,
+					cmi.SecurePage
+             FROM   CVMENUITEMS AS cmi with(nolock)
+             WHERE  cmi.MenuCode = @MenuCode AND cmi.ItemCode = @ItemCode
+-- Recursive part - recursive CTE 
+             UNION ALL 
+             SELECT cmi2.MenuCode, 
+                    cmi2.ItemCode, 
+                    cmi2.ParentItem, 
+                    cmi2.Label,
+                    cmi2.PageName,
+                    cmi2.CustomPage,
+                    cmi2.IsSection,
+                    cmi2.NoBreadcrumbIfIsSectionWithNoPage,
+                    ParentLevel + 1,
+                    cmi2.Parameter,
+					cmi2.SecurePage
+             FROM   CVMENUITEMS AS cmi2 with(nolock)
+                    INNER JOIN RecursiveCVMenuItems AS rpc
+                      ON cmi2.MenuCode = rpc.MenuCode AND cmi2.ItemCode = rpc.ParentItem AND rpc.ItemCode <> rpc.ParentItem AND rpc.IsSection = 0) 
+    SELECT   MenuCode,
+             ItemCode, 
+             ParentItem, 
+             Label,
+             PageName,
+             CustomPage, 
+             IsSection,
+             NoBreadcrumbIfIsSectionWithNoPage,
+             ParentLevel,
+             Parameter,
+			 SecurePage
+    FROM     RecursiveCVMenuItems
+    ORDER BY ParentLevel DESC",47
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Breadcrumb' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",23
+"(@1 varchar(8000))SELECT [SYSTABLE].* FROM [SYSTABLE] WHERE [SysType]=@1 ORDER BY [SYSTABLE].[SysType] ASC,[SYSTABLE].[Code] ASC",22
+"(@p0 nvarchar(4000),@p1 nvarchar(4000),@p2 nvarchar(4000))select setting0_.SettingID as settingid1_8_, setting0_.fwCreated as fwcreated2_8_, setting0_.fwCreatedBy as fwcreatedby3_8_, setting0_.fwUpdated as fwupdated4_8_, setting0_.fwUpdatedBy as fwupdatedby5_8_, setting0_.SettingName as settingname6_8_, setting0_.Scope as scope7_8_, setting0_.ScopeKey as scopekey8_8_, setting0_.AuthenticationState as authenticationstate9_8_, setting0_.SettingValue as settingvalue10_8_ from Setting setting0_ where setting0_.SettingName=@p0 and (setting0_.SettingValue<>@p1 or setting0_.SettingValue is null or setting0_.Scope=@p2)",22
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Product Title' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",20
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Price' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",20
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Image' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",20
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Product Code' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",20
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product Quick View Modal' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Item Zoned' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List View Product Button' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List RRP' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Unit Of Measure' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Add To Cart' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Unit Description' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Qty Box' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Add To Favourites' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List GST' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Product List Availability' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",18
+select [CVMENUITEMS].* from [CVMENUITEMS] WHERE MenuCode = 'PUBLIC' AND PageName = 'ProductDisplay.aspx' AND ParentItem <> '' AND Separator <> 1 AND Parameter = '' ORDER BY Seq,17
+select [CVMENUITEMS].* from [CVMENUITEMS] WHERE MenuCode = 'PUBLIC' AND PageName = 'ProductDisplay.aspx' AND ParentItem <> '' AND Separator <> 1 ORDER BY Seq,17
+select ProductAttributeProduct.* from ProductAttributeProduct WHERE AttributedProductCode='CV329'    and IsDisabled <> '1'   ORDER BY [PRODUCTATTRIBUTEPRODUCT].[ProductAttributeProductID],16
+"select [LIVEPRICECACHE].* from [LIVEPRICECACHE] WHERE CustomerCode = 'WEBSALES' AND
+                WarehouseCode = 'SYD' AND
+                Quantity = 1.00 AND
+                ProductCode = 'CV329' AND
+                EffectiveDate = '03-Jul-2025' AND
+                ISNULL(UnitOfMeasure, '') = '' ORDER BY EffectiveDate",16
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Article Date' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+(@1 varchar(8000))SELECT [CAMPAIGN].* FROM [CAMPAIGN] WHERE [CampaignCode]=@1 ORDER BY [CAMPAIGN].[CampaignCode] ASC,15
+"(@2 varchar(8000),@1 int)UPDATE [Campaign] set [TotalImpressions] = [TotalImpressions]+@1  WHERE [CampaignCode]=@2",15
+"(@3 varchar(8000),@1 varchar(8000),@2 varchar(8000))UPDATE [USER] set [ArticleLastViewed] = @1,[fwUpdated] = @2  WHERE [EmailAddress]=@3",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Article Title' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [LIVEPRICECACHE].* from [LIVEPRICECACHE] WHERE CustomerCode = 'WEBSALES' AND
+                WarehouseCode = 'SYD' AND
+                Quantity = 1.00 AND
+                ProductCode = 'CV343' AND
+                EffectiveDate = '03-Jul-2025' AND
+                ISNULL(UnitOfMeasure, '') = '' ORDER BY EffectiveDate",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Article Image' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Item Zoned' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Campaign Slider' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Article Detail Button' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article Slider' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select [TEMPLATES].* from [TEMPLATES] WHERE Code = 'LIVE' and Name ='THEME_BPDTHEME01_Article List Article Summary' ORDER BY [TEMPLATES].[Code], [TEMPLATES].[Type], [TEMPLATES].[Name]",15
+"select ProntoStockWarehouse.StockCode,ProntoStockWarehouse.WhseCode,ProntoStockWarehouse.QtyOnHand,ProntoStockWarehouse.QtyCommitted,ProntoStockWarehouse.AvailableQty,ProntoStockWarehouse.AvgDemand,ProntoStockWarehouse.OnOrder,ProntoStockWarehouse.InTransit,ProntoStockWarehouse.Updated,ProntoStockWarehouse.BackOrders,ProntoStockWarehouse.QtyAwaitingPutaway,ProntoStockWarehouse.QtyCurrentOrders,ProntoStockWarehouse.QtyFactoryOrders,ProntoStockWarehouse.QtyForwardOrders,ProntoStockWarehouse.ExpiryTime,ProntoStockWarehouse.CustomAvailability,ProntoStockWarehouse.WhseOnlyUserNum1,ProntoStockWarehouse.CustomAvailabilityQty,ProntoStockWarehouse.MinimumQty,ProntoStockWarehouse.MaximumQty,ProntoStockWarehouse.WhseAvgCost,[PRONTOSTOCKWAREHOUSE].fwCreated,[PRONTOSTOCKWAREHOUSE].fwCreatedBy,[PRONTOSTOCKWAREHOUSE].fwUpdated,[PRONTOSTOCKWAREHOUSE].fwUpdatedBy  from ProntoStockWarehouse WHERE  0=0   AND StockCode IN ('CV329') AND WhseCode IN ('NDC','SYD','ZZZZ')  ORDER BY ProntoStockWarehouse.WhseCode",15
+"select [LIVEPRICECACHE].* from [LIVEPRICECACHE] WHERE CustomerCode = 'WEBSALES' AND
+                WarehouseCode = 'SYD' AND
+                Quantity = 1.00 AND
+                ProductCode = 'CV405' AND
+                EffectiveDate = '03-Jul-2025' AND
+                ISNULL(UnitOfMeasure, '') = '' ORDER BY EffectiveDate",14
+"select [LIVEPRICECACHE].* from [LIVEPRICECACHE] WHERE CustomerCode = 'WEBSALES' AND
+                WarehouseCode = 'SYD' AND
+                Quantity = 1.00 AND
+                ProductCode = 'CV283' AND
+                EffectiveDate = '03-Jul-2025' AND
+                ISNULL(UnitOfMeasure, '') = '' ORDER BY EffectiveDate",14
+"select ProntoStockWarehouse.StockCode,ProntoStockWarehouse.WhseCode,ProntoStockWarehouse.QtyOnHand,ProntoStockWarehouse.QtyCommitted,ProntoStockWarehouse.AvailableQty,ProntoStockWarehouse.AvgDemand,ProntoStockWarehouse.OnOrder,ProntoStockWarehouse.InTransit,ProntoStockWarehouse.Updated,ProntoStockWarehouse.BackOrders,ProntoStockWarehouse.QtyAwaitingPutaway,ProntoStockWarehouse.QtyCurrentOrders,ProntoStockWarehouse.QtyFactoryOrders,ProntoStockWarehouse.QtyForwardOrders,ProntoStockWarehouse.ExpiryTime,ProntoStockWarehouse.CustomAvailability,ProntoStockWarehouse.WhseOnlyUserNum1,ProntoStockWarehouse.CustomAvailabilityQty,ProntoStockWarehouse.MinimumQty,ProntoStockWarehouse.MaximumQty,ProntoStockWarehouse.WhseAvgCost,[PRONTOSTOCKWAREHOUSE].fwCreated,[PRONTOSTOCKWAREHOUSE].fwCreatedBy,[PRONTOSTOCKWAREHOUSE].fwUpdated,[PRONTOSTOCKWAREHOUSE].fwUpdatedBy  from ProntoStockWarehouse WHERE  0=0   AND StockCode IN ('CV396') AND WhseCode IN ('ADE','SYD','ZZZZ')  ORDER BY ProntoStockWarehouse.WhseCode",14
+"select [LIVEPRICECACHE].* from [LIVEPRICECACHE] WHERE CustomerCode = 'WEBSALES' AND
+                WarehouseCode = 'SYD' AND
+                Quantity = 1.00 AND
+                ProductCode = 'CV252' AND
+                EffectiveDate = '03-Jul-2025' AND
+                ISNULL(UnitOfMeasure, '') = '' ORDER BY EffectiveDate",14
+select ProductAttributeProduct.* from ProductAttributeProduct WHERE AttributedProductCode='CV283'    and IsDisabled <> '1'   ORDER BY [PRODUCTATTRIBUTEPRODUCT].[ProductAttributeProductID],14
+select ProductAttributeProduct.* from ProductAttributeProduct WHERE AttributedProductCode='CV252'    and IsDisabled <> '1'   ORDER BY [PRODUCTATTRIBUTEPRODUCT].[ProductAttributeProductID],14
+"select ProntoStockWarehouse.StockCode,ProntoStockWarehouse.WhseCode,ProntoStockWarehouse.QtyOnHand,ProntoStockWarehouse.QtyCommitted,ProntoStockWarehouse.AvailableQty,ProntoStockWarehouse.AvgDemand,ProntoStockWarehouse.OnOrder,ProntoStockWarehouse.InTransit,ProntoStockWarehouse.Updated,ProntoStockWarehouse.BackOrders,ProntoStockWarehouse.QtyAwaitingPutaway,ProntoStockWarehouse.QtyCurrentOrders,ProntoStockWarehouse.QtyFactoryOrders,ProntoStockWarehouse.QtyForwardOrders,ProntoStockWarehouse.ExpiryTime,ProntoStockWarehouse.CustomAvailability,ProntoStockWarehouse.WhseOnlyUserNum1,ProntoStockWarehouse.CustomAvailabilityQty,ProntoStockWarehouse.MinimumQty,ProntoStockWarehouse.MaximumQty,ProntoStockWarehouse.WhseAvgCost,[PRONTOSTOCKWAREHOUSE].fwCreated,[PRONTOSTOCKWAREHOUSE].fwCreatedBy,[PRONTOSTOCKWAREHOUSE].fwUpdated,[PRONTOSTOCKWAREHOUSE].fwUpdatedBy  from ProntoStockWarehouse WHERE  0=0   AND StockCode IN ('CV343') AND WhseCode IN ('ADE','MEL','NDC','SYD','ZZZZ')  ORDER BY ProntoStockWarehouse.WhseCode",14
+"select COUNT(*) AS ProductCount, ProductAttributeProduct.ProductCode  from ProductAttributeProduct INNER JOIN Product ON Product.ProductCode = CASE CreateLineNotes WHEN 1 THEN ProductAttributeProduct.ProductCode ELSE ProductAttributeProduct.AttributedProductCode END AND ProductAttributeProduct.ProductCode IN ('CV398','CV396','CV405','CV312','CV283','CV252','CV329','CV343') WHERE  (1=1)      and IsDisabled <> '1'   GROUP BY ProductAttributeProduct.ProductCode",14
+"select ProntoStockPrice.* from ProntoStockPrice INNER JOIN Product ON ProntoStockPrice.StockCode = Product.ProductCode INNER JOIN CampaignProducts ON Product.ProductCode = CampaignProducts.ProductCode AND CampaignProducts.CampaignCode = 'DEMO1' INNER JOIN Campaign ON CampaignProducts.CampaignCode = Campaign.CampaignCode AND Campaign.CampaignCode = 'DEMO1' WHERE Product.ItemValid = 1 AND Product.IsDeleted = 0  AND ProntoStockPrice.StockCode IN ('CV398','CV396','CV405','CV312','CV283','CV252','CV329','CV343') ORDER BY PriceRegion",14
+"select ProntoStockWarehouse.StockCode,ProntoStockWarehouse.WhseCode,ProntoStockWarehouse.QtyOnHand,ProntoStockWarehouse.QtyCommitted,ProntoStockWarehouse.AvailableQty,ProntoStockWarehouse.AvgDemand,ProntoStockWarehouse.OnOrder,ProntoStockWarehouse.InTransit,ProntoStockWarehouse.Updated,ProntoStockWarehouse.BackOrders,ProntoStockWarehouse.QtyAwaitingPutaway,ProntoStockWarehouse.QtyCurrentOrders,ProntoStockWarehouse.QtyFactoryOrders,ProntoStockWarehouse.QtyForwardOrders,ProntoStockWarehouse.ExpiryTime,ProntoStockWarehouse.CustomAvailability,ProntoStockWarehouse.WhseOnlyUserNum1,ProntoStockWarehouse.CustomAvailabilityQty,ProntoStockWarehouse.MinimumQty,ProntoStockWarehouse.MaximumQty,ProntoStockWarehouse.WhseAvgCost,[PRONTOSTOCKWAREHOUSE].fwCreated,[PRONTOSTOCKWAREHOUSE].fwCreatedBy,[PRONTOSTOCKWAREHOUSE].fwUpdated,[PRONTOSTOCKWAREHOUSE].fwUpdatedBy  from ProntoStockWarehouse WHERE  0=0   and ProntoStockWarehouse.StockCode IN ('CV398','CV396','CV405','CV312','CV283','CV252','CV329','CV343')   ORDER BY ProntoStockWarehouse.WhseCode",14
