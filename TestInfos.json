@@ -1,9 +1,9 @@
 [
   {
     "SiteName": "DemoEvergreenProduction",
-    "Url": "https://demoevergreen.commerce.vision",
-    "DbName": "cv-db-site-prod-australiaeast-demoevergreen",
-    "DbConnectionString": "Server=tcp:cv-sqls-site-prod-australiaeast-001.database.windows.net,1433;Initial Catalog=cv-db-site-prod-australiaeast-demoevergreen;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;Authentication=\"Active Directory Integrated\";"
+    "Url": "---",
+    "DbName": "----",
+    "DbConnectionString": ";"
   },
   {
     "SiteName": "DemoEvergreenLocal",
